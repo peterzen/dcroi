@@ -42,10 +42,6 @@ const config = {
         test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
         loader : 'file-loader'
       },
-      // {
-      //   test: /\.html/,
-      //   loader: 'raw-loader'
-      // },
       {
         test: /\.(sass|scss|css)$/,
         use: [{
@@ -56,16 +52,6 @@ const config = {
           loader: "sass-loader" // compiles Sass to CSS
         }]
       },
-      {
-        test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            { loader: 'css-loader'},
-            { loader: 'sass-loader'}
-          ],
-        })
-      }
     ]
   },
   plugins: [
@@ -92,6 +78,19 @@ if(isProd) {  // plugins to use in a production environment
       from: __dirname + '/src/public'
     }]),
     new ExtractTextPlugin("styles.css")
+  );
+
+  config.module.rules.push(
+    {
+      test: /\.css$/,
+      use: ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: [
+          { loader: 'css-loader'},
+          { loader: 'sass-loader'}
+        ],
+      })
+    }
   );
 }
 
