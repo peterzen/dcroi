@@ -7,11 +7,6 @@ body {
   font-size: .875rem;
 }
 
-.feather {
-  width: 16px;
-  height: 16px;
-  vertical-align: text-bottom;
-}
 
 /*
  * Sidebar
@@ -65,12 +60,19 @@ body {
  * Navbar
  */
 
+.navbar {
+  background-color: #0C1E3E !important;
+}
+
 .navbar-brand {
   padding-top: .75rem;
   padding-bottom: .75rem;
   font-size: 1rem;
-  background-color: rgba(0, 0, 0, .25);
+  //background-color: rgba(0, 0, 0, .25);
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .25);
+  padding-left: 3rem;
+  background-image: url('../public/images/decred-symbol-1.svg');
+  background-repeat: no-repeat;
 }
 
 .navbar .form-control {

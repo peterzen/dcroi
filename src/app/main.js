@@ -8,7 +8,7 @@ import $ from 'jquery';
 import 'bootstrap';
 import 'popper.js';
 
-import 'bootstrap/dist/css/bootstrap.css';
+// import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
 import '../styles/custom.scss';
 
