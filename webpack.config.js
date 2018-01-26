@@ -2,12 +2,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin'); // Require  html-webpa
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 require('dotenv').config();
 
 
 const ENV = process.env.APP_ENV;
-const isTest = ENV === 'test'
+const isTest = ENV === 'test';
 const isProd = ENV === 'prod';
 
 function setDevTool() {  // function to set dev-tool depending on environment
@@ -54,6 +55,16 @@ const config = {
         }, {
           loader: "sass-loader" // compiles Sass to CSS
         }]
+      },
+      {
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            { loader: 'css-loader'},
+            { loader: 'sass-loader'}
+          ],
+        })
       }
     ]
   },
@@ -79,8 +90,9 @@ if(isProd) {  // plugins to use in a production environment
     new UglifyJSPlugin(),  // minify the chunk
     new CopyWebpackPlugin([{  // copy assets to public folder
       from: __dirname + '/src/public'
-    }])
+    }]),
+    new ExtractTextPlugin("styles.css")
   );
-};
+}
 
 module.exports = config;
