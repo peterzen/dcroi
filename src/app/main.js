@@ -76,10 +76,10 @@ function buildChart(containerId, chartTitle, yAxisTitle, seriesData) {
     title: {
       text: chartTitle
     },
-    subtitle: {
-      text: document.ontouchstart === undefined ?
-        'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
-    },
+    // subtitle: {
+    //   text: document.ontouchstart === undefined ?
+    //     'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+    // },
     xAxis: {
       type: 'datetime'
     },
@@ -179,10 +179,10 @@ if ('serviceWorker' in navigator &&
 // Your custom JavaScript goes here
 
 const watchAddress = 'DsRpXsnhsXU3LvuahyHXVLPdnQzd2NxL3Bj';
-const apiBackendUrl = 'https://mainnet.decred.org/api/txs?address=';
+const apiBackendUrl = 'http://45.77.65.205/api/txs?address=';
 const backendUrl = '/tx.json';
 
-// var backendUrl = apiBackendUrl + watchAddress;
+// const backendUrl = apiBackendUrl + watchAddress;
 
 $.get(backendUrl, function (data) {
 
@@ -207,7 +207,7 @@ $.get(backendUrl, function (data) {
 
   // console.log(voteTxs);
 
-  let timeSeries = getTimeSeries(voteTxs, 'week');
+  let timeSeries = getTimeSeries(voteTxs, 'month');
 
   buildChart('ticketcount-container', 'Tickets voted', 'Ticket count',
     [{
@@ -230,6 +230,31 @@ $.get(backendUrl, function (data) {
         return [
           i.datePoint.valueOf(),
           i.rewardAmt
+        ]
+      })
+    }]
+  );
+
+  buildChart('ticketprice-container', 'Average ticket price', 'Ticket price (DCR)',
+    [{
+      type: 'area',
+      name: 'Ticket price',
+      data: _.map(timeSeries, function (i) {
+        return [
+          i.datePoint.valueOf(),
+          i.ticketCostAmt / i.ticketCount
+        ]
+      })
+    }]
+  );
+  buildChart('returnpct-container', 'Return on investment', 'Returns (%)',
+    [{
+      type: 'area',
+      name: 'Return on investment',
+      data: _.map(timeSeries, function (i) {
+        return [
+          i.datePoint.valueOf(),
+          i.returnPct
         ]
       })
     }]
