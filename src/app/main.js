@@ -1,9 +1,11 @@
 /* eslint-env browser */
 
-import Highcharts from 'highcharts';
-import _ from 'lodash';
 import 'bootstrap';
 import 'popper.js';
+
+import numeral from 'numeral';
+
+global.numeral = numeral;
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -21,10 +23,13 @@ const database = new Database();
 database.fetchInsightData()
   .then(function () {
 
-    const seriesData = database.getTimeSeries('month');
+    database.calculateSeries('month');
+
+    const seriesData = database.getSeries();
+    const totals = database.getTotals();
 
     ReactDOM.render(
-      <ChartComponent seriesData={seriesData}/>,
+      <ChartComponent seriesData={seriesData} totals={totals}/>,
       document.getElementById("chart-component")
     );
 

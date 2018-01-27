@@ -1,21 +1,32 @@
-
 import React from "react";
+
+// this fucker isn't visible inside the _.map() functions below
+const numeral =require('numeral');
 
 
 import TimelineChartComponent from './TimelineChartComponent.jsx';
+import TotalsComponent from './TotalsComponent.jsx';
 
 
-
-class TicketCountChartComponent extends TimelineChartComponent {
+class TicketVoteCountChartComponent extends TimelineChartComponent {
   componentDidMount() {
-    this.instantiateChart(this.state.id, 'Tickets voted', 'Ticket count',
+    this.instantiateChart(this.state.id, 'Tickets', 'Tickets staked & voted on',
       [{
         type: 'area',
-        name: 'Ticket count',
+        name: 'Voted tickets',
         data: _.map(this.props.seriesData, function (i) {
           return [
             i.datePoint.valueOf(),
-            i.ticketCount
+            i.ticketVoteCount
+          ]
+        })
+      }, {
+        type: 'area',
+        name: 'Staked tickets',
+        data: _.map(this.props.seriesData, function (i) {
+          return [
+            i.datePoint.valueOf(),
+            i.ticketStakedCount
           ]
         })
       }]
@@ -49,7 +60,7 @@ class TicketPriceChartComponent extends TimelineChartComponent {
         data: _.map(this.props.seriesData, function (i) {
           return [
             i.datePoint.valueOf(),
-            i.ticketCostAmt / i.ticketCount
+            i.purchasedTicketCostAmount / i.ticketStakedCount
           ]
         })
       }]
@@ -66,7 +77,7 @@ class ReturnChartComponent extends TimelineChartComponent {
         data: _.map(this.props.seriesData, function (i) {
           return [
             i.datePoint.valueOf(),
-            i.returnPct
+            i.returnPct * 100
           ]
         })
       }]
@@ -80,61 +91,32 @@ export default class ChartComponent extends React.Component {
   render() {
 
     return (
-      <div className="row">
-        <div className="col-md-6">
-          <div className="card mb-4">
-            <TicketCountChartComponent seriesData={this.props.seriesData}/>
+      <div>
+        <TotalsComponent totals={this.props.totals}/>
+
+        <div className="row">
+          <div className="col-md-6">
+            <div className="card mb-4">
+              <TicketVoteCountChartComponent seriesData={this.props.seriesData}/>
+            </div>
           </div>
-        </div>
-        <div className="col-md-6">
-          <div className="card mb-4">
-            <RewardChartComponent seriesData={this.props.seriesData}/>
+          <div className="col-md-6">
+            <div className="card mb-4">
+              <RewardChartComponent seriesData={this.props.seriesData}/>
+            </div>
           </div>
-        </div>
-        <div className="col-md-6">
-          <div className="card mb-4">
-            <TicketPriceChartComponent seriesData={this.props.seriesData}/>
+          <div className="col-md-6">
+            <div className="card mb-4">
+              <TicketPriceChartComponent seriesData={this.props.seriesData}/>
+            </div>
           </div>
-        </div>
-        <div className="col-md-6">
-          <div className="card mb-4">
-            <ReturnChartComponent seriesData={this.props.seriesData}/>
+          <div className="col-md-6">
+            <div className="card mb-4">
+              <ReturnChartComponent seriesData={this.props.seriesData}/>
+            </div>
           </div>
         </div>
       </div>
     );
   }
-
-
 }
-
-
-/*
-
-
-
-        <div className="col-md-6">
-          <div className="card mb-4">
-            <div className="card-body" id="reward-container" style="height:320px;">
-              Loading chart...
-            </div>
-          </div>
-        </div>
-
-        <div className="col-md-6">
-          <div className="card mb-4">
-
-            <div className="card-body" id="ticketprice-container" style="height:320px;">
-              Loading chart...
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="card mb-4">
-            <div class="card-body" id="returnpct-container" style="height:320px;">
-              Loading chart...
-            </div>
-          </div>
-        </div>
- */

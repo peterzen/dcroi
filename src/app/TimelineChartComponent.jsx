@@ -5,7 +5,6 @@ import shortid from "shortid";
 
 
 
-
 export default class TimelineChartComponent extends React.Component {
 
   constructor(props) {
@@ -28,7 +27,7 @@ export default class TimelineChartComponent extends React.Component {
 
     Highcharts.chart(containerId, {
       chart: {
-        zoomType: 'x'
+        // zoomType: 'x'
       },
       title: {
         text: chartTitle
@@ -46,7 +45,7 @@ export default class TimelineChartComponent extends React.Component {
         }
       },
       legend: {
-        enabled: false
+        enabled: true
       },
       plotOptions: {
         area: {

@@ -66,7 +66,12 @@ const config = {
     port: 3000,
   },
 
-  devtool: setDevTool(),  //Set the devtool
+  devtool: setDevTool(),
+
+  watchOptions: {
+    aggregateTimeout: 300,
+    poll: 1000
+  }
 
 };
 

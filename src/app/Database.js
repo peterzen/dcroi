@@ -3,6 +3,7 @@ import $ from "jquery";
 import moment from "moment/moment";
 import Promise from 'bluebird';
 
+// const watchAddress = 'DscqujsHptcUnDKChLMaTRrNhfmTW5Gvfo5';
 const watchAddress = 'DsRpXsnhsXU3LvuahyHXVLPdnQzd2NxL3Bj';
 const apiBackendUrl = 'http://dcroi.com/api/txs?address=';
 const backendUrl = '/tx.json';
@@ -14,84 +15,141 @@ export default class Database {
 
   constructor() {
     this.voteTxs = [];
+    this.stakeTxs = [];
+    this.txIndex = {};
+    this._totals = {};
+    this._series = [];
   }
 
   fetchInsightData() {
 
     let voteTxs = this.voteTxs = [];
+    let stakeTxs = this.stakeTxs = [];
 
     return new Promise(function (resolve, reject) {
 
       $.get(backendUrl, function (data) {
 
-        let txs = _.filter(data.txs, 'agendas');
+        let insightVoteTxs = _.filter(data.txs, 'agendas');
+        let insightStakeTxs = _.filter(data.txs, 'isStakeTx');
 
-        _.reduce(txs, function (sum, item) {
-          // console.log(item.txid);
+        _.map(insightVoteTxs, function (tx) {
 
-          let rewardVin = _.find(item.vin, 'stakebase');
-          let returnVin = _.find(item.vin, 'txid');
+          let rewardVin = _.find(tx.vin, 'stakebase');
+          let returnVin = _.find(tx.vin, 'txid');
 
           voteTxs.push({
             rewardAmt: rewardVin.amountin,
-            ticketCostAmt: returnVin.amountin,
-            ts: moment.unix(item.time).startOf('day')
+            returnedTicketCostAmt: returnVin.amountin,
+            ticketId: tx.ticketid,
+            ts: moment.unix(tx.time)
           });
+        });
 
-          // console.log(item.time + ' reward: ' + rewardVin.amountin + ' return: ' + returnVin.amountin);
+        _.map(insightStakeTxs, function (tx) {
+          stakeTxs.push({
+            ticketId: tx.txid,
+            purchasedTicketCostAmount: tx.valueIn,
+            fees: tx.fees,
+            ts: moment.unix(tx.time)
+          });
         });
 
         resolve();
-
       });
     });
   }
 
 
-  getTimeSeries(timeInterval) {
+  _indexTxs(insightTxCollection, timeInterval, txType) {
 
-    let series = [],
-      txIndex = {},
-      txs = this.voteTxs;
+    let txIndex = this.txIndex;
 
-    _.map(txs, function (item) {
-      let datePoint = item.ts.endOf(timeInterval);
+    _.map(insightTxCollection, function (tx) {
+      let datePoint = tx.ts.endOf(timeInterval);
       let dateSpec = datePoint.toString();
       if (_.isUndefined(txIndex[dateSpec])) {
         txIndex[dateSpec] = {
           datePoint: datePoint,
-          items: []
+          voteTx: [],
+          stakeTx: []
         };
       }
-      txIndex[dateSpec].items.push(item);
+      txIndex[dateSpec][txType].push(tx);
     });
-    // console.log(txIndex);
+  }
 
-    _.forEach(txIndex, function (txIndexItem, dateSpec) {
+
+  calculateSeries(timeInterval) {
+
+    this.txIndex = {};
+
+    this._indexTxs(this.voteTxs, timeInterval, 'voteTx');
+    this._indexTxs(this.stakeTxs, timeInterval, 'stakeTx');
+
+    console.log(this.txIndex);
+
+    let totals = this._totals = {
+      ticketVoteCount: 0,
+      rewardAmt: 0,
+      returnPct: 0,
+      ticketStakedCount: 0,
+      purchasedTicketCostAmount: 0,
+      returnedTicketCostAmt: 0
+    };
+
+    let series = this._series = [];
+
+    _.forEach(this.txIndex, function (txIndexItem) {
       let sum = {
         datePoint: txIndexItem.datePoint,
-        ticketCount: 0,
+        ticketVoteCount: 0,
         rewardAmt: 0,
-        ticketCostAmt: 0,
-        returnPct: 0
+        returnedTicketCostAmt: 0,
+        returnPct: 0,
+        ticketStakedCount: 0,
+        purchasedTicketCostAmount: 0,
+        liveTickets: 0
       };
-      _.map(txIndexItem.items, function (tx) {
-        sum.ticketCount += 1;
+      _.map(txIndexItem.voteTx, function (tx) {
+        sum.ticketVoteCount += 1;
         sum.rewardAmt += tx.rewardAmt;
-        sum.ticketCostAmt += tx.ticketCostAmt;
-        sum.returnPct = sum.rewardAmt / sum.ticketCostAmt * 100;
+        sum.returnedTicketCostAmt += tx.returnedTicketCostAmt;
+        sum.returnPct = sum.rewardAmt / sum.returnedTicketCostAmt;
+
+        totals.rewardAmt += tx.rewardAmt;
+        totals.ticketVoteCount += 1;
+        totals.returnedTicketCostAmt += tx.returnedTicketCostAmt;
+        totals.returnPct = totals.rewardAmt / totals.returnedTicketCostAmt;
+      });
+
+      _.map(txIndexItem.stakeTx, function (tx) {
+        sum.ticketStakedCount += 1;
+        sum.purchasedTicketCostAmount += tx.purchasedTicketCostAmount;
+
+        totals.ticketStakedCount += 1;
+        totals.purchasedTicketCostAmount += tx.purchasedTicketCostAmount;
       });
 
       series.push(sum);
     });
 
-    // console.log(series);
+    // XXX TODO this needs to take into account missed tickets
+    totals.liveTickets = totals.ticketStakedCount - totals.ticketVoteCount;
 
-    return _.sortBy(series, function (item) {
+    console.log(this._totals);
+  }
+
+
+  getTotals() {
+    return this._totals;
+  }
+
+  getSeries() {
+    return _.sortBy(this._series, function (item) {
       return item.datePoint.valueOf();
     });
   }
-
 }
 
 
