@@ -6,14 +6,15 @@ import Promise from 'bluebird';
 // const watchAddress = 'DscqujsHptcUnDKChLMaTRrNhfmTW5Gvfo5';
 const watchAddress = 'DsRpXsnhsXU3LvuahyHXVLPdnQzd2NxL3Bj';
 const apiBackendUrl = 'http://dcroi.com/api/txs?address=';
-const backendUrl = '/tx.json';
+// const backendUrl = '/tx.json';
 
-// const backendUrl = apiBackendUrl + watchAddress;
+const backendUrl = apiBackendUrl + watchAddress;
 
 
-export default class Database {
+export default class Datastore {
 
-  constructor() {
+  constructor(eventEmitter) {
+    this.eventEmitter = eventEmitter;
     this.voteTxs = [];
     this.stakeTxs = [];
     this.txIndex = {};
@@ -21,10 +22,14 @@ export default class Database {
     this._series = [];
   }
 
-  fetchInsightData() {
+  fetchInsightData(votingWalletAddress) {
 
     let voteTxs = this.voteTxs = [];
     let stakeTxs = this.stakeTxs = [];
+
+    this.eventEmitter.emit('datastore:isloading');
+
+    const backendUrl = apiBackendUrl + votingWalletAddress;
 
     return new Promise(function (resolve, reject) {
 

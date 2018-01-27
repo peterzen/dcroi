@@ -9,7 +9,6 @@ export default class TotalsComponent extends React.Component {
     let totals = this.props.totals;
 
     return (
-
       <div className="row mb-3">
         <div className="col-md-3 col-sm-6">
           <div className="card mb-2">

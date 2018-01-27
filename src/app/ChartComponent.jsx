@@ -6,7 +6,8 @@ const numeral =require('numeral');
 
 import TimelineChartComponent from './TimelineChartComponent.jsx';
 import TotalsComponent from './TotalsComponent.jsx';
-
+import TimeIntervalSelectorComponent from "./TimeIntervalSelectorComponent.jsx";
+import TimeResolutionSelectorComponent from './TimeResolutionSelectorComponent.jsx';
 
 class TicketVoteCountChartComponent extends TimelineChartComponent {
   componentDidMount() {
@@ -92,6 +93,17 @@ export default class ChartComponent extends React.Component {
 
     return (
       <div>
+
+        <div className="row mt-5">
+          <div className="col-sm-6 mb-5">
+            <TimeIntervalSelectorComponent/>
+          </div>
+
+          <div className="col-sm-6">
+            <TimeResolutionSelectorComponent/>
+          </div>
+        </div>
+
         <TotalsComponent totals={this.props.totals}/>
 
         <div className="row">

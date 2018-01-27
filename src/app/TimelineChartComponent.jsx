@@ -4,13 +4,13 @@ import Highcharts from "highcharts";
 import shortid from "shortid";
 
 
-
 export default class TimelineChartComponent extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      id: shortid.generate()
+      id: shortid.generate(),
+      chart: null
     };
   }
 
@@ -22,10 +22,16 @@ export default class TimelineChartComponent extends React.Component {
     );
   }
 
+  componentWillUnmount() {
+    if (this.state.chart !== null) {
+      this.state.chart.destroy();
+    }
+  }
+
 
   instantiateChart(containerId, chartTitle, yAxisTitle, seriesData) {
 
-    Highcharts.chart(containerId, {
+    this.state.chart = Highcharts.chart(containerId, {
       chart: {
         // zoomType: 'x'
       },

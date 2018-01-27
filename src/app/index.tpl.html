@@ -47,8 +47,9 @@
   <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">
     DC<strong>ROI</strong>
   </a>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Enter voting wallet address: Ds...."
-         aria-label="DCR address">
+
+  <span id="address-input-component" class="w-100"> </span>
+
   <ul class="navbar-nav px-3">
     <li class="nav-item text-nowrap">
       <a class="nav-link" href="#">About</a>
@@ -58,40 +59,7 @@
 
 <div class="container-fluid">
   <main role="main">
-    <div class="row mt-5">
 
-      <div class="col-sm-6 mb-5">
-        <div class="dropdown" >
-          <button class="btn btn-outline-secondary dropdown-toggle" id="period-selector-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-calendar"></i>
-            This week
-          </button>
-
-          <div class="dropdown-menu" aria-labelledby="period-selector-dropdown">
-            <a class="dropdown-item" href="#">This week</a>
-            <a class="dropdown-item" href="#">This month</a>
-            <a class="dropdown-item" href="#">All time</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-sm-6">
-        <div class="btn-toolbar mb-5 text-right">
-          <div class="btn-group btn-group-toggle pull-right text-right" data-toggle="buttons">
-            <label class="btn btn-outline-secondary active">
-              <input type="radio" name="options" id="option1" autocomplete="off" checked> Daily
-            </label>
-            <label class="btn btn-outline-secondary">
-              <input type="radio" name="options" id="option2" autocomplete="off"> Weekly
-            </label>
-            <label class="btn btn-outline-secondary">
-              <input type="radio" name="options" id="option3" autocomplete="off"> Monthly
-            </label>
-          </div>
-        </div>
-      </div>
-
-    </div>
 
     <div id="chart-component"></div>
 

@@ -3,10 +3,6 @@
 import 'bootstrap';
 import 'popper.js';
 
-import numeral from 'numeral';
-
-global.numeral = numeral;
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -14,26 +10,40 @@ import 'font-awesome/css/font-awesome.css';
 import '../styles/custom.scss';
 
 
+import EventEmitterSingleton from './EventEmitter';
+
+const eventEmitter = EventEmitterSingleton.createInstance();
+
 import ChartComponent from './ChartComponent.jsx';
+import AddressInputComponent from './AddressInputComponent.jsx';
 
-import Database from './Database.js';
 
-const database = new Database();
+import Datastore from './Datastore.js';
 
-database.fetchInsightData()
-  .then(function () {
+const datastore = new Datastore(EventEmitterSingleton.getInstance());
 
-    database.calculateSeries('month');
 
-    const seriesData = database.getSeries();
-    const totals = database.getTotals();
+ReactDOM.render(
+  <AddressInputComponent/>,
+  document.getElementById("address-input-component")
+);
 
-    ReactDOM.render(
-      <ChartComponent seriesData={seriesData} totals={totals}/>,
-      document.getElementById("chart-component")
-    );
+eventEmitter.addListener('addressinput:changed', function (votingWalletAddress) {
+  datastore.fetchInsightData(votingWalletAddress)
+    .then(function () {
 
-  });
+      datastore.calculateSeries('week');
+
+      const seriesData = datastore.getSeries();
+      const totals = datastore.getTotals();
+
+      ReactDOM.render(
+        <ChartComponent seriesData={seriesData} totals={totals}/>,
+        document.getElementById("chart-component")
+      );
+    });
+});
+
 
 
 
