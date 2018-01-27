@@ -3,13 +3,8 @@ import $ from "jquery";
 import moment from "moment/moment";
 import Promise from 'bluebird';
 
-// const watchAddress = 'DscqujsHptcUnDKChLMaTRrNhfmTW5Gvfo5';
-const watchAddress = 'DsRpXsnhsXU3LvuahyHXVLPdnQzd2NxL3Bj';
 const apiBackendUrl = 'http://dcroi.com/api/txs?address=';
 // const backendUrl = '/tx.json';
-
-const backendUrl = apiBackendUrl + watchAddress;
-
 
 export default class Datastore {
 
