@@ -14,15 +14,17 @@ export default class AddressInputComponent extends React.Component {
 
   componentDidMount(){
     const form = $('#address-input-form');
+    const inputField = form.find('input');
     this.setState({
-      input: form.find('input')
+      input: inputField
     });
+    inputField.focus();
   }
 
   render() {
     return (
-      <div className="w-100 text-center mt-5">
-        <h3 className="mb-3">Enter voting wallet address</h3>
+      <div className="w-100 text-center">
+        <h4 className="">Enter voting wallet address</h4>
         <form className="form-inline  justify-content-center" id="address-input-form">
           <label className="sr-only" htmlFor="votingWalletAddress">Name</label>
           <input type="text" className="form-control form-control-lg mr-sm-2" id="votingWalletAddress" placeholder="Ds...."
