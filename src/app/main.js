@@ -17,6 +17,7 @@ const eventEmitter = EventEmitterSingleton.createInstance();
 import ChartComponent from './ChartComponent.jsx';
 import AddressInputComponent from './AddressInputComponent.jsx';
 import SpinnerComponent from './SpinnerComponent.jsx';
+import StakeStatsComponent from './StakeStatsComponent.jsx';
 
 import Datastore from './Datastore.js';
 
@@ -27,6 +28,17 @@ ReactDOM.render(
   <AddressInputComponent/>,
   document.getElementById("address-input-component")
 );
+
+
+datastore.fetchStakeStats()
+  .done(function(stakeStatsData){
+
+    ReactDOM.render(
+      <StakeStatsComponent stakeStatsData={stakeStatsData}/>,
+      document.getElementById("stake-stats-component")
+    );
+  });
+
 
 eventEmitter.addListener('addressinput:changed', function (votingWalletAddress) {
 

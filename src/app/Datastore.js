@@ -4,6 +4,7 @@ import moment from "moment/moment";
 import Promise from 'bluebird';
 
 const apiBackendUrl = 'http://dcroi.com/api/txs?address=';
+const stakeStatsUrl = 'http://dcroi.com/stakestats/mainnet/current.json';
 // const backendUrl = '/tx.json';
 
 export default class Datastore {
@@ -140,6 +141,21 @@ export default class Datastore {
     console.log(this._totals);
   }
 
+  fetchStakeStats() {
+
+    return $.getJSON(stakeStatsUrl)
+      .done(function () {
+        // console.log("second success");
+      })
+      .fail(function () {
+        // console.log("error");
+      })
+      .always(function () {
+        // console.log("complete");
+      });
+
+
+  }
 
   getTotals() {
     return this._totals;
