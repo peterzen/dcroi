@@ -26,16 +26,19 @@ export default class AddressInputComponent extends React.Component {
       <div className="w-100">
         <form className="" id="address-input-form">
           <div className="form-group row">
-            <label className="col-sm-4 col-form-label col-form-label-lg" htmlFor="votingWalletAddress">Your voting wallet address</label>
+            <label className="col-sm-4 col-form-label col-form-label-lg" htmlFor="votingWalletAddress">Your voting
+              wallet address</label>
             <div className="col-sm-8">
               <input type="text"
                      className="form-control form-control-lg mr-sm-2"
                      id="votingWalletAddress"
                      placeholder="Ds...."
-                     aria-label="DCR voting wallet address" onChange={this.onInputChanged} size="35"/>
-            </div>
-            <div className="invalid-feedback">
-              Invalid Decred address.
+                     autoComplete="off"
+                     aria-label="DCR voting wallet address"
+                     onChange={this.onInputChanged} size="35"/>
+              <div className="invalid-feedback">
+                Invalid Decred address (pool addresses are not supported).
+              </div>
             </div>
           </div>
         </form>
