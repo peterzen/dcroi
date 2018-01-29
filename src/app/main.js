@@ -16,7 +16,7 @@ const eventEmitter = EventEmitterSingleton.createInstance();
 
 import ChartComponent from './ChartComponent.jsx';
 import AddressInputComponent from './AddressInputComponent.jsx';
-
+import SpinnerComponent from './SpinnerComponent.jsx';
 
 import Datastore from './Datastore.js';
 
@@ -29,6 +29,12 @@ ReactDOM.render(
 );
 
 eventEmitter.addListener('addressinput:changed', function (votingWalletAddress) {
+
+  ReactDOM.render(
+    <SpinnerComponent/>,
+    document.getElementById("chart-component")
+  );
+
   datastore.fetchInsightData(votingWalletAddress)
     .then(function () {
 

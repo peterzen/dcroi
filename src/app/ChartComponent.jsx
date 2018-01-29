@@ -93,7 +93,7 @@ export default class ChartComponent extends React.Component {
 
     return (
       <div>
-
+        <hr/>
         <div className="row mt-5">
           <div className="col-sm-6 mb-5">
             <TimeIntervalSelectorComponent/>
