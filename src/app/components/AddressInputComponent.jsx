@@ -12,7 +12,7 @@ export default class AddressInputComponent extends React.Component {
     this.onInputChanged = this.onInputChanged.bind(this);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     const form = $('#address-input-form');
     const inputField = form.find('input');
     this.setState({
@@ -23,15 +23,20 @@ export default class AddressInputComponent extends React.Component {
 
   render() {
     return (
-      <div className="w-100 text-center">
-        <h4 className="">Enter voting wallet address</h4>
-        <form className="form-inline  justify-content-center" id="address-input-form">
-          <label className="sr-only" htmlFor="votingWalletAddress">Name</label>
-          <input type="text" className="form-control form-control-lg mr-sm-2" id="votingWalletAddress" placeholder="Ds...."
-                 aria-label="DCR voting wallet address" onChange={this.onInputChanged} size="35"/>
-
-          <div className="invalid-feedback">
-            Invalid Decred address.
+      <div className="w-100">
+        <form className="" id="address-input-form">
+          <div className="form-group row">
+            <label className="col-sm-4 col-form-label col-form-label-lg" htmlFor="votingWalletAddress">Your voting wallet address</label>
+            <div className="col-sm-8">
+              <input type="text"
+                     className="form-control form-control-lg mr-sm-2"
+                     id="votingWalletAddress"
+                     placeholder="Ds...."
+                     aria-label="DCR voting wallet address" onChange={this.onInputChanged} size="35"/>
+            </div>
+            <div className="invalid-feedback">
+              Invalid Decred address.
+            </div>
           </div>
         </form>
       </div>

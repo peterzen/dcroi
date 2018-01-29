@@ -13,37 +13,36 @@ export default class TotalsComponent extends React.Component {
         <div className="col-md-3 col-sm-6">
           <div className="card mb-2">
             <div className="card-body">
-              <h2>{numeral(totals.ticketVoteCount).format('0,0')}</h2>
-              <p className="mb-0 text-muted text-uppercase">Tickets voted</p>
+              <p className="mb-0 text-uppercase">Tickets voted</p>
+              <h3>{numeral(totals.ticketVoteCount).format('0,0')}</h3>
             </div>
           </div>
         </div>
         <div className="col-md-3 col-sm-6">
           <div className="card mb-2">
             <div className="card-body">
-              <h2>{numeral(totals.liveTickets).format('0,0')}</h2>
-              <p className="mb-0 text-muted text-uppercase">Live tickets</p>
+              <p className="mb-0 text-uppercase">Live tickets</p>
+              <h3>{numeral(totals.liveTickets).format('0,0')}</h3>
             </div>
           </div>
         </div>
         <div className="col-md-3 col-sm-6">
           <div className="card  mb-2">
             <div className="card-body">
-              <h2>{numeral(totals.rewardAmt).format('0,0.00')} <small className="text-muted">DCR</small></h2>
-              <p className="mb-0 text-muted text-uppercase">&sum; rewards</p>
+              <p className="mb-0 text-uppercase">&sum; rewards</p>
+              <h3>{numeral(totals.rewardAmt).format('0,0.00')} <small className="text-muted">DCR</small></h3>
             </div>
           </div>
         </div>
         <div className="col-md-3 col-sm-6">
           <div className="card mb-2">
             <div className="card-body">
-              <h2>{numeral(totals.returnPct).format('0.00%')}</h2>
-              <p className="mb-0 text-muted text-uppercase">Return %</p>
+              <p className="mb-0 text-uppercase">Return %</p>
+              <h3>{numeral(totals.returnPct).format('0.00%')}</h3>
             </div>
           </div>
         </div>
       </div>
-
     )
   }
 
