@@ -1,6 +1,6 @@
 import React from "react";
 
-import EventEmitterSingleton from './EventEmitter';
+import EventEmitterSingleton from '../EventEmitter';
 
 export default class TimeIntervalSelectorComponent extends React.Component {
 

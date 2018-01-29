@@ -14,10 +14,10 @@ import EventEmitterSingleton from './EventEmitter';
 
 const eventEmitter = EventEmitterSingleton.createInstance();
 
-import ChartComponent from './ChartComponent.jsx';
-import AddressInputComponent from './AddressInputComponent.jsx';
-import SpinnerComponent from './SpinnerComponent.jsx';
-import StakeStatsComponent from './StakeStatsComponent.jsx';
+import ChartComponent from './components/ChartComponent.jsx';
+import AddressInputComponent from './components/AddressInputComponent.jsx';
+import SpinnerComponent from './components/SpinnerComponent.jsx';
+import StakeStatsComponent from './components/StakeStatsComponent.jsx';
 
 import Datastore from './Datastore.js';
 

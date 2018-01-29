@@ -1,7 +1,7 @@
 import React from "react";
 import $ from 'jquery'
 
-import EventEmitterSingleton from './EventEmitter';
+import EventEmitterSingleton from '../EventEmitter';
 
 export default class AddressInputComponent extends React.Component {
 
