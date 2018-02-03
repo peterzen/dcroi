@@ -1,4 +1,5 @@
 import React from "react";
+import $ from 'jquery';
 
 import TotalsComponent from './TotalsComponent.jsx';
 import TimeIntervalSelectorComponent from "./TimeIntervalSelectorComponent.jsx";

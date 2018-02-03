@@ -3,6 +3,7 @@
 import 'bootstrap';
 import 'popper.js';
 import _ from 'lodash';
+import $ from 'jquery';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -24,6 +25,10 @@ import Datastore from './Datastore.js';
 
 const datastore = new Datastore();
 
+
+$(window).on("load", function () {
+  $('body').removeClass('is-rendering');
+});
 
 ReactDOM.render(
   <AddressInputComponent/>,

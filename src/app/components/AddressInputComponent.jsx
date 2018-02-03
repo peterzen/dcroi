@@ -1,5 +1,6 @@
 import React from "react";
 import $ from 'jquery'
+import _ from 'lodash';
 
 import EventEmitterSingleton from '../EventEmitter';
 
@@ -18,14 +19,18 @@ export default class AddressInputComponent extends React.Component {
     this.setState({
       input: $inputField
     });
-    $inputField.focus();
 
-    $inputField.on('focus', function(){
+    _.delay(function () {
+      $inputField.focus();
+    }, 100);
+
+    $inputField.on('focus', function () {
       this.select();
     });
+
   }
 
-  componentWillDismount(){
+  componentWillDismount() {
     this.state.input.off('focus');
   }
 
