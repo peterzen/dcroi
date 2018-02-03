@@ -2,6 +2,7 @@
 
 import 'bootstrap';
 import 'popper.js';
+import _ from 'lodash';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -14,14 +15,14 @@ import EventEmitterSingleton from './EventEmitter';
 
 const eventEmitter = EventEmitterSingleton.createInstance();
 
-import ChartComponent from './components/ChartComponent.jsx';
+import AppComponent from './components/AppComponent.jsx';
 import AddressInputComponent from './components/AddressInputComponent.jsx';
 import SpinnerComponent from './components/SpinnerComponent.jsx';
 import StakeStatsComponent from './components/StakeStatsComponent.jsx';
 
 import Datastore from './Datastore.js';
 
-const datastore = new Datastore(EventEmitterSingleton.getInstance());
+const datastore = new Datastore();
 
 
 ReactDOM.render(
@@ -31,7 +32,7 @@ ReactDOM.render(
 
 
 datastore.fetchStakeStats()
-  .done(function(stakeStatsData){
+  .done(function (stakeStatsData) {
 
     ReactDOM.render(
       <StakeStatsComponent stakeStatsData={stakeStatsData}/>,
@@ -50,16 +51,19 @@ eventEmitter.addListener('addressinput:changed', function (votingWalletAddress) 
   datastore.fetchInsightData(votingWalletAddress)
     .then(function () {
 
-      datastore.calculateSeries('week');
-
-      const seriesData = datastore.getSeries();
-      const totals = datastore.getTotals();
+      datastore.calculateSeries('day');
 
       ReactDOM.render(
-        <ChartComponent seriesData={seriesData} totals={totals}/>,
+        <AppComponent datastore={datastore}/>,
         document.getElementById("chart-component")
       );
     });
+});
+
+
+eventEmitter.addListener('resolutionselector:changed', function (timeInterval) {
+
+  datastore.calculateSeries(_.first(timeInterval));
 });
 
 

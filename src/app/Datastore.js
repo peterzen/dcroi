@@ -3,14 +3,17 @@ import $ from "jquery";
 import moment from "moment/moment";
 import Promise from 'bluebird';
 
+import EventEmitterSingleton from './EventEmitter';
+
+
 const apiBackendUrl = 'http://dcroi.com/api/txs?address=';
 const stakeStatsUrl = 'http://dcroi.com/stakestats/mainnet/current.json';
 // const backendUrl = '/tx.json';
 
 export default class Datastore {
 
-  constructor(eventEmitter) {
-    this.eventEmitter = eventEmitter;
+  constructor() {
+    this.eventEmitter = EventEmitterSingleton.getInstance();
     this.voteTxs = [];
     this.stakeTxs = [];
     this.txIndex = {};
@@ -67,7 +70,7 @@ export default class Datastore {
     let txIndex = this.txIndex;
 
     _.map(insightTxCollection, function (tx) {
-      let datePoint = tx.ts.endOf(timeInterval);
+      let datePoint = tx.ts.clone().endOf(timeInterval);
       let dateSpec = datePoint.toString();
       if (_.isUndefined(txIndex[dateSpec])) {
         txIndex[dateSpec] = {
@@ -83,12 +86,14 @@ export default class Datastore {
 
   calculateSeries(timeInterval) {
 
+    console.log('calculateSeries '+ timeInterval);
+
     this.txIndex = {};
 
     this._indexTxs(this.voteTxs, timeInterval, 'voteTx');
     this._indexTxs(this.stakeTxs, timeInterval, 'stakeTx');
 
-    console.log(this.txIndex);
+    // console.log('txIndex ' + timeInterval + '%%%%%', this.txIndex);
 
     let totals = this._totals = {
       ticketVoteCount: 0,
@@ -102,6 +107,7 @@ export default class Datastore {
     let series = this._series = [];
 
     _.forEach(this.txIndex, function (txIndexItem) {
+
       let sum = {
         datePoint: txIndexItem.datePoint,
         ticketVoteCount: 0,
@@ -112,6 +118,7 @@ export default class Datastore {
         purchasedTicketCostAmount: 0,
         liveTickets: 0
       };
+
       _.map(txIndexItem.voteTx, function (tx) {
         sum.ticketVoteCount += 1;
         sum.rewardAmt += tx.rewardAmt;
@@ -134,11 +141,13 @@ export default class Datastore {
 
       series.push(sum);
     });
-
+    
     // XXX TODO this needs to take into account missed tickets
     totals.liveTickets = totals.ticketStakedCount - totals.ticketVoteCount;
 
-    console.log(this._totals);
+    this.eventEmitter.emit('datastore:changed');
+
+    // console.log('datastore:changed ** '+ timeInterval, this._series);
   }
 
   fetchStakeStats() {

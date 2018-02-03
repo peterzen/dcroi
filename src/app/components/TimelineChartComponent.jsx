@@ -1,17 +1,22 @@
 import React from 'react';
+import _ from 'lodash';
 
 import Highcharts from "highcharts";
 import shortid from "shortid";
 
+import EventEmitterSingleton from '../EventEmitter';
 
 export default class TimelineChartComponent extends React.Component {
 
   constructor(props) {
     super(props);
+    this.eventEmitter = EventEmitterSingleton.getInstance();
     this.state = {
       id: shortid.generate(),
       chart: null
     };
+    this._listenerToken = null;
+    this.datastoreChangedHandler = this.datastoreChangedHandler.bind(this);
   }
 
   render() {
@@ -26,17 +31,34 @@ export default class TimelineChartComponent extends React.Component {
     if (this.state.chart !== null) {
       this.state.chart.destroy();
     }
+    if(this._listenerToken !== null) {
+      this._listenerToken.remove();
+    }
   }
 
+  componentDidMount() {
+    this.state.chart = Highcharts.chart(this.state.id, this.getChartData());
+    this._listenerToken = this.eventEmitter.addListener('datastore:changed', this.datastoreChangedHandler);
+  }
 
-  instantiateChart(containerId, chartTitle, yAxisTitle, seriesData) {
+  datastoreChangedHandler(){
+    const updatedSeriesData = this.getSeriesData();
+    console.log('datastoreChangedHandler',updatedSeriesData);
 
-    this.state.chart = Highcharts.chart(containerId, {
+    const chartSeries = this.state.chart.series;
+    _.map(updatedSeriesData, function(series, index){
+      chartSeries[index].setData(series.data, false);
+    });
+    this.state.chart.redraw(true);
+  }
+
+  getChartData(){
+    return {
       chart: {
         // zoomType: 'x'
       },
       title: {
-        text: chartTitle
+        text: this.chartInfo.chartTitle
       },
       // subtitle: {
       //   text: document.ontouchstart === undefined ?
@@ -47,7 +69,7 @@ export default class TimelineChartComponent extends React.Component {
       },
       yAxis: {
         title: {
-          text: yAxisTitle
+          text: this.chartInfo.yAxisTitle
         }
       },
       legend: {
@@ -80,9 +102,11 @@ export default class TimelineChartComponent extends React.Component {
         }
       },
 
-      series: seriesData
-    });
-
+      series: this.getSeriesData()
+    };
   }
 
+  getSeriesData(){
+    return [];
+  }
 }

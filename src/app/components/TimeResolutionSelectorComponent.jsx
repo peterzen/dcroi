@@ -1,4 +1,5 @@
 import React from "react";
+import $ from 'jquery';
 
 import EventEmitterSingleton from '../EventEmitter';
 
@@ -9,7 +10,7 @@ export default class TimeResolutionSelectorComponent extends React.Component {
     this.eventEmitter = EventEmitterSingleton.getInstance();
 
     this.state = {
-      value: 'day'
+      value: 'month'
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -19,18 +20,36 @@ export default class TimeResolutionSelectorComponent extends React.Component {
   render() {
     return (
       <div className="btn-toolbar mb-5 text-right">
-        <div className="btn-group btn-group-toggle pull-right text-right" data-toggle="buttons">
+        <div className="btn-group btn-group-toggle pull-right text-right" data-toggle="buttons" id="resolution-select-buttons">
           <label className="btn btn-outline-secondary active">
-            <input type="radio" name="options" value="day" id="option1" autoComplete="off"
-                   onChange={this.handleChange} checked/> Daily
+            <input type="radio"
+                   name="options"
+                   value="day"
+                   id="option1"
+                   autoComplete="off"
+                   checked={this.state.value === "day"}
+                   onChange={this.handleChange}
+                   /> Daily
           </label>
           <label className="btn btn-outline-secondary">
-            <input type="radio" name="options" value="week" autoComplete="off"
-                   onChange={this.handleChange}/> Weekly
+            <input type="radio"
+                   name="options"
+                   id="option2"
+                   value="week"
+                   autoComplete="off"
+                   checked={this.state.value === 'week'}
+                   onChange={this.handleChange}
+                   /> Weekly
           </label>
           <label className="btn btn-outline-secondary">
-            <input type="radio" name="options" value="month" autoComplete="off"
-                   onChange={this.handleChange}/> Monthly
+            <input type="radio"
+                   name="options"
+                   id="option3"
+                   value="month"
+                   autoComplete="off"
+                   checked={this.state.value === 'month'}
+                   onChange={this.handleChange}
+                   /> Monthly
           </label>
         </div>
       </div>
@@ -38,9 +57,24 @@ export default class TimeResolutionSelectorComponent extends React.Component {
   }
 
   handleChange(e) {
-    const value = e.target.getAttribute('data-value');
+    const value = e.target.value;
+    this.setState({
+       value: value
+    });
     this.eventEmitter.emit('resolutionselector:changed', value);
   }
 
+  componentDidMount() {
+    const $buttons = $('#resolution-select-buttons');
+    this.setState({
+      $buttons: $buttons
+    });
+    $buttons.on('change', this.handleChange.bind(this));
+  }
+
+  componentWillDismount(){
+    this.state.$buttons.off();
+    this.state.$buttons.button('destroy');
+  }
 
 }

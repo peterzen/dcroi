@@ -6,7 +6,7 @@ export default class TotalsComponent extends React.Component {
 
   render(){
 
-    let totals = this.props.totals;
+    let totals = this.props.datastore.getTotals();
 
     return (
       <div className="row mb-3">
