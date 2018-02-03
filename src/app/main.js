@@ -37,9 +37,8 @@ ReactDOM.render(
 );
 
 
-datastore.fetchStakeStats()
+datastore.fetchStakePoolStats()
   .done(function (stakeStatsData) {
-
     ReactDOM.render(
       <StakeStatsComponent stakeStatsData={stakeStatsData}/>,
       document.getElementById("stake-stats-component")

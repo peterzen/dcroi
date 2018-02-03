@@ -11,8 +11,8 @@ import EventEmitterSingleton from './EventEmitter';
 
 const apiUrlRoot = 'https://dcroi.com/api';
 
-const apiBackendUrl = 'https://dcroi.com/api/txs?address=';
-const stakeStatsUrl = 'https://dcroi.com/stakestats/mainnet/current.json';
+// const apiBackendUrl = 'https://dcroi.com/api/txs?address=';
+// const stakeStatsUrl = 'https://dcroi.com/stakestats/mainnet/current.json';
 
 export default class Datastore {
 
@@ -32,7 +32,7 @@ export default class Datastore {
 
     this.eventEmitter.emit('datastore:isloading');
 
-    const backendUrl = apiBackendUrl + votingWalletAddress;
+    const backendUrl = apiUrlRoot + '/address/' + votingWalletAddress + '/count/1000/raw';
 
     const eventEmitter = this.eventEmitter;
 
@@ -40,9 +40,9 @@ export default class Datastore {
     eventEmitter.emit('progress:update', progress);
 
     return $.get(backendUrl, {
-      chunking: true,
+      // chunking: true,
     })
-      .progress(function(){
+      .progress(function () {
         progress += 10;
         eventEmitter.emit('progress:update', progress);
       })
@@ -50,29 +50,35 @@ export default class Datastore {
 
         eventEmitter.emit('progress:update', 100);
 
-        let insightVoteTxs = _.filter(data.txs, 'agendas');
-        let insightStakeTxs = _.filter(data.txs, 'isStakeTx');
-
-        _.map(insightVoteTxs, function (tx) {
+        _.map(data, function (tx) {
 
           let rewardVin = _.find(tx.vin, 'stakebase');
           let returnVin = _.find(tx.vin, 'txid');
 
-          voteTxs.push({
-            rewardAmt: rewardVin.amountin,
-            returnedTicketCostAmt: returnVin.amountin,
-            ticketId: tx.ticketid,
-            ts: moment.unix(tx.time)
-          });
-        });
+          if (rewardVin !== undefined) {
+            voteTxs.push({
+              rewardAmt: rewardVin.amountin,
+              returnedTicketCostAmt: returnVin.amountin,
+              ticketId: tx.ticketid,
+              ts: moment.unix(tx.time)
+            });
 
-        _.map(insightStakeTxs, function (tx) {
-          stakeTxs.push({
-            ticketId: tx.txid,
-            purchasedTicketCostAmount: tx.valueIn,
-            fees: tx.fees,
-            ts: moment.unix(tx.time)
-          });
+          } else {
+
+            let stakeTx = _.find(tx.vout, function(vout){
+              if(vout.scriptPubKey.commitamt){
+                return true;
+              }
+            });
+
+            if (stakeTx) {
+              stakeTxs.push({
+                ticketId: tx.txid,
+                purchasedTicketCostAmount: stakeTx.scriptPubKey.commitamt,
+                ts: moment.unix(tx.time)
+              });
+            }
+          }
         });
 
         return Promise.resolve();
@@ -165,18 +171,36 @@ export default class Datastore {
     // console.log('datastore:changed ** '+ timeInterval, this._series);
   }
 
-  fetchStakeStats() {
+  fetchStakePoolStats() {
+
+    const poolStats = {};
+
+    const stakeStatsUrl = apiUrlRoot + '/stake/pool';
+    const stakeDiffUrl = apiUrlRoot + '/stake/diff';
+
+    // const stakeStatsUrl = '/pool.json';
+    // const stakeDiffUrl = '/diff.json';
 
     return $.getJSON(stakeStatsUrl)
-      .done(function () {
-        // console.log("second success");
+      .then(function(data){
+        poolStats.pool = data;
+        return $.getJSON(stakeDiffUrl);
       })
-      .fail(function () {
-        // console.log("error");
+      .then(function(data){
+        poolStats.diff = data;
+        return Promise.resolve(poolStats);
       })
-      .always(function () {
-        // console.log("complete");
-      });
+      // TODO add error handling
+
+      // .done(function () {
+      //   // console.log("second success");
+      // })
+      // .fail(function () {
+      //   // console.log("error");
+      // })
+      // .always(function () {
+      //   // console.log("complete");
+      // });
   }
 
   getTotals() {
