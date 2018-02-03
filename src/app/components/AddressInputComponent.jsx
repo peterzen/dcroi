@@ -14,11 +14,31 @@ export default class AddressInputComponent extends React.Component {
 
   componentDidMount() {
     const form = $('#address-input-form');
-    const inputField = form.find('input');
+    const $inputField = form.find('input');
     this.setState({
-      input: inputField
+      input: $inputField
     });
-    inputField.focus();
+    $inputField.focus();
+
+    $inputField.on('focus', function(){
+      this.select();
+    });
+  }
+
+  componentWillDismount(){
+    this.state.input.off('focus');
+  }
+
+
+  onInputChanged(e) {
+    e.preventDefault();
+    const value = this.state.input.val();
+    if (value.match(/^Ds[a-zA-Z0-9]{33}$/)) {
+      this.state.input.removeClass('is-invalid');
+      this.eventEmitter.emit('addressinput:changed', value);
+    } else {
+      this.state.input.addClass('is-invalid');
+    }
   }
 
   render() {
@@ -44,16 +64,5 @@ export default class AddressInputComponent extends React.Component {
         </form>
       </div>
     );
-  }
-
-  onInputChanged(e) {
-    e.preventDefault();
-    const value = this.state.input.val();
-    if (value.match(/^Ds[a-zA-Z0-9]{33}$/)) {
-      this.state.input.removeClass('is-invalid');
-      this.eventEmitter.emit('addressinput:changed', value);
-    } else {
-      this.state.input.addClass('is-invalid');
-    }
   }
 }
