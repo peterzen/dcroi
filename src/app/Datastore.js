@@ -6,9 +6,8 @@ import Promise from 'bluebird';
 import EventEmitterSingleton from './EventEmitter';
 
 
-const apiBackendUrl = 'http://dcroi.com/api/txs?address=';
-const stakeStatsUrl = 'http://dcroi.com/stakestats/mainnet/current.json';
-// const backendUrl = '/tx.json';
+const apiBackendUrl = 'https://dcroi.com/api/txs?address=';
+const stakeStatsUrl = 'https://dcroi.com/stakestats/mainnet/current.json';
 
 export default class Datastore {
 
@@ -141,7 +140,7 @@ export default class Datastore {
 
       series.push(sum);
     });
-    
+
     // XXX TODO this needs to take into account missed tickets
     totals.liveTickets = totals.ticketStakedCount - totals.ticketVoteCount;
 

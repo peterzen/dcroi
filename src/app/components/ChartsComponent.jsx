@@ -1,9 +1,5 @@
 import React from "react";
 
-// this fucker isn't visible inside the _.map() functions below
-const numeral = require('numeral');
-
-
 import TimelineChartComponent from './TimelineChartComponent.jsx';
 
 class TicketVoteCountChartComponent extends TimelineChartComponent {
