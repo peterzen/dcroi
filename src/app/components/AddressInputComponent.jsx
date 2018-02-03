@@ -30,7 +30,7 @@ export default class AddressInputComponent extends React.Component {
 
   }
 
-  componentWillDismount() {
+  componentWillUnmount() {
     this.state.input.off('focus');
   }
 

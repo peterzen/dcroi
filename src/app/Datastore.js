@@ -1,10 +1,15 @@
 import _ from 'lodash';
-import $ from "jquery";
+import $ from 'jquery';
+import './vendor/jq-ajax-progress';
+
 import moment from "moment/moment";
-import Promise from 'bluebird';
+// import Promise from 'bluebird';
+import Promise from 'promise-polyfill';
+
 
 import EventEmitterSingleton from './EventEmitter';
 
+const apiUrlRoot = 'https://dcroi.com/api';
 
 const apiBackendUrl = 'https://dcroi.com/api/txs?address=';
 const stakeStatsUrl = 'https://dcroi.com/stakestats/mainnet/current.json';
@@ -29,9 +34,21 @@ export default class Datastore {
 
     const backendUrl = apiBackendUrl + votingWalletAddress;
 
-    return new Promise(function (resolve, reject) {
+    const eventEmitter = this.eventEmitter;
 
-      $.get(backendUrl, function (data) {
+    let progress = 5;
+    eventEmitter.emit('progress:update', progress);
+
+    return $.get(backendUrl, {
+      chunking: true,
+    })
+      .progress(function(){
+        progress += 10;
+        eventEmitter.emit('progress:update', progress);
+      })
+      .then(function (data) {
+
+        eventEmitter.emit('progress:update', 100);
 
         let insightVoteTxs = _.filter(data.txs, 'agendas');
         let insightStakeTxs = _.filter(data.txs, 'isStakeTx');
@@ -58,9 +75,8 @@ export default class Datastore {
           });
         });
 
-        resolve();
+        return Promise.resolve();
       });
-    });
   }
 
 
@@ -85,7 +101,7 @@ export default class Datastore {
 
   calculateSeries(timeInterval) {
 
-    console.log('calculateSeries '+ timeInterval);
+    console.log('calculateSeries ' + timeInterval);
 
     this.txIndex = {};
 
@@ -161,8 +177,6 @@ export default class Datastore {
       .always(function () {
         // console.log("complete");
       });
-
-
   }
 
   getTotals() {

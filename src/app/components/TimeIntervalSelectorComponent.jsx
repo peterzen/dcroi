@@ -38,6 +38,7 @@ export default class TimeIntervalSelectorComponent extends React.Component {
   }
 
   handleChange(e) {
+    e.preventDefault();
     const value = e.target.getAttribute('data-value');
     this.eventEmitter.emit('timeintervalselector:changed', value);
     this.setState({
@@ -51,7 +52,7 @@ export default class TimeIntervalSelectorComponent extends React.Component {
   //
   // }
   //
-  // componentWillDismount() {
+  // componentWillUnmount() {
   //
   // }
   //

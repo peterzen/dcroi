@@ -20,6 +20,7 @@ import AppComponent from './components/AppComponent.jsx';
 import AddressInputComponent from './components/AddressInputComponent.jsx';
 import SpinnerComponent from './components/SpinnerComponent.jsx';
 import StakeStatsComponent from './components/StakeStatsComponent.jsx';
+import ProgressbarComponent from './components/ProgressbarComponent.jsx';
 
 import Datastore from './Datastore.js';
 
@@ -49,11 +50,15 @@ datastore.fetchStakeStats()
 eventEmitter.addListener('addressinput:changed', function (votingWalletAddress) {
 
   ReactDOM.render(
-    <SpinnerComponent/>,
+    <ProgressbarComponent/>,
     document.getElementById("chart-component")
   );
 
   datastore.fetchInsightData(votingWalletAddress)
+    .progress(function(a){
+      console.log('.', a)
+    })
+
     .then(function () {
 
       datastore.calculateSeries('day');

@@ -104,3 +104,19 @@ body {
 .card-body.timeline-chart {
   height: 320px;
 }
+
+
+
+.progress-bar-stakey  {
+  .stakey {
+    height: 50px;
+    width: 50px;
+    background-image: url('../public/images/Stakey.gif');
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin: 5px auto;
+  }
+  .progress {
+    height: 0.25rem;
+  }
+}

@@ -16,46 +16,6 @@ export default class TimeResolutionSelectorComponent extends React.Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-
-  render() {
-    return (
-      <div className="btn-toolbar mb-5 text-right">
-        <div className="btn-group btn-group-toggle pull-right text-right" data-toggle="buttons" id="resolution-select-buttons">
-          <label className="btn btn-outline-secondary active">
-            <input type="radio"
-                   name="options"
-                   value="day"
-                   id="option1"
-                   autoComplete="off"
-                   checked={this.state.value === "day"}
-                   onChange={this.handleChange}
-                   /> Daily
-          </label>
-          <label className="btn btn-outline-secondary">
-            <input type="radio"
-                   name="options"
-                   id="option2"
-                   value="week"
-                   autoComplete="off"
-                   checked={this.state.value === 'week'}
-                   onChange={this.handleChange}
-                   /> Weekly
-          </label>
-          <label className="btn btn-outline-secondary">
-            <input type="radio"
-                   name="options"
-                   id="option3"
-                   value="month"
-                   autoComplete="off"
-                   checked={this.state.value === 'month'}
-                   onChange={this.handleChange}
-                   /> Monthly
-          </label>
-        </div>
-      </div>
-    );
-  }
-
   handleChange(e) {
     const value = e.target.value;
     this.setState({
@@ -72,9 +32,49 @@ export default class TimeResolutionSelectorComponent extends React.Component {
     $buttons.on('change', this.handleChange.bind(this));
   }
 
-  componentWillDismount(){
+  componentWillUnmount(){
     this.state.$buttons.off();
     this.state.$buttons.button('destroy');
+  }
+
+
+  render() {
+    return (
+      <div className="btn-toolbar mb-5 text-right">
+        <div className="btn-group btn-group-toggle pull-right text-right" data-toggle="buttons" id="resolution-select-buttons">
+          <label className="btn btn-outline-secondary active">
+            <input type="radio"
+                   name="options"
+                   value="day"
+                   id="option1"
+                   autoComplete="off"
+                   checked={this.state.value === "day"}
+                   onChange={this.handleChange}
+            /> Daily
+          </label>
+          <label className="btn btn-outline-secondary">
+            <input type="radio"
+                   name="options"
+                   id="option2"
+                   value="week"
+                   autoComplete="off"
+                   checked={this.state.value === 'week'}
+                   onChange={this.handleChange}
+            /> Weekly
+          </label>
+          <label className="btn btn-outline-secondary">
+            <input type="radio"
+                   name="options"
+                   id="option3"
+                   value="month"
+                   autoComplete="off"
+                   checked={this.state.value === 'month'}
+                   onChange={this.handleChange}
+            /> Monthly
+          </label>
+        </div>
+      </div>
+    );
   }
 
 }

@@ -43,6 +43,18 @@ const config = {
         loader : 'file-loader'
       },
       {
+        test: /\.(gif|png|jpe?g|svg)$/i,
+        use: [
+          'file-loader',
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              bypassOnDebug: true,
+            },
+          },
+        ],
+      },
+      {
         test: /\.(sass|scss|css)$/,
         use: [{
           loader: "style-loader" // creates style nodes from JS strings
