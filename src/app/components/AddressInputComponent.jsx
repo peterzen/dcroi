@@ -9,7 +9,9 @@ export default class AddressInputComponent extends React.Component {
   constructor(props) {
     super(props);
     this.eventEmitter = EventEmitterSingleton.getInstance();
-    this.state = {};
+    this.state = {
+      value: props.defaultAddress
+    };
     this.onInputChanged = this.onInputChanged.bind(this);
   }
 
@@ -28,10 +30,16 @@ export default class AddressInputComponent extends React.Component {
       this.select();
     });
 
+    this._eventEmitterToken = this.eventEmitter.addListener('votingaddress:set', function (votingWalletAddress) {
+      $inputField.val(votingWalletAddress);
+    });
   }
 
   componentWillUnmount() {
     this.state.input.off('focus');
+    if(this._eventEmitterToken !== undefined){
+      this._eventEmitterToken.remove();
+    }
   }
 
 
@@ -40,7 +48,7 @@ export default class AddressInputComponent extends React.Component {
     const value = this.state.input.val();
     if (value.match(/^Ds[a-zA-Z0-9]{33}$/)) {
       this.state.input.removeClass('is-invalid');
-      this.eventEmitter.emit('addressinput:changed', value);
+      this.eventEmitter.emit('votingaddress:set', value);
     } else {
       this.state.input.addClass('is-invalid');
     }

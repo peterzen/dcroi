@@ -31,6 +31,7 @@ $(window).on("load", function () {
   $('body').removeClass('is-rendering');
 });
 
+
 ReactDOM.render(
   <AddressInputComponent/>,
   document.getElementById("address-input-component")
@@ -46,7 +47,7 @@ datastore.fetchStakePoolStats()
   });
 
 
-eventEmitter.addListener('addressinput:changed', function (votingWalletAddress) {
+eventEmitter.addListener('votingaddress:set', function (votingWalletAddress) {
 
   ReactDOM.render(
     <ProgressbarComponent/>,
@@ -54,10 +55,6 @@ eventEmitter.addListener('addressinput:changed', function (votingWalletAddress) 
   );
 
   datastore.fetchInsightData(votingWalletAddress)
-    .progress(function(a){
-      console.log('.', a)
-    })
-
     .then(function () {
 
       datastore.calculateSeries('day');
@@ -77,7 +74,11 @@ eventEmitter.addListener('resolutionselector:changed', function (timeInterval) {
 
 
 
+const votingAddressParam = window.location.pathname.substring(1);
 
+if(votingAddressParam !== undefined){
+  eventEmitter.emit('votingaddress:set', votingAddressParam);
+}
 
 
 
