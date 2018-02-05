@@ -51,7 +51,7 @@ class RewardChartComponent extends TimelineChartComponent {
 
     return [{
       type: 'area',
-      name: 'Ticket price',
+      name: 'Reward',
       data: _.map(seriesData, function (i) {
         return [
           i.datePoint.valueOf(),

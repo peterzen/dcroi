@@ -22,7 +22,7 @@ export default class StakeStatsComponent extends React.Component {
           <div className="card mb-2">
             <div className="card-body">
               <p className="mb-0 text-uppercase">Est'd next ticket price</p>
-              <h3>{numeral(stats.diff.next).format('0,0.00')} <small className="text-muted">DCR</small></h3>
+              <h3>{numeral(stats.diff.estimates.expected).format('0,0.00')} <small className="text-muted">DCR</small></h3>
             </div>
           </div>
         </div>
