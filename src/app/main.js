@@ -49,6 +49,8 @@ datastore.fetchStakePoolStats()
 
 eventEmitter.addListener('votingaddress:set', function (votingWalletAddress) {
 
+  window.location.hash = votingWalletAddress;
+
   ReactDOM.render(
     <ProgressbarComponent/>,
     document.getElementById("chart-component")
