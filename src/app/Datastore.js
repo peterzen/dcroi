@@ -35,7 +35,7 @@ export default class Datastore {
 
     this.eventEmitter.emit('datastore:isloading');
 
-    const backendUrl = dcrdataUrlRoot + '/address/' + votingWalletAddress + '/count/1000/raw';
+    const backendUrl = dcrdataUrlRoot + '/address/' + votingWalletAddress + '/count/250000/raw';
 
     const eventEmitter = this.eventEmitter;
 
@@ -54,6 +54,10 @@ export default class Datastore {
         eventEmitter.emit('progress:update', 100);
 
         _.map(data, function (tx) {
+
+          if(tx.confirmations === 0){
+            return;
+          }
 
           let rewardVin = _.find(tx.vin, 'stakebase');
           let returnVin = _.find(tx.vin, 'txid');
@@ -136,7 +140,7 @@ export default class Datastore {
     this._indexTxs(this.stakeTxs, timeInterval, 'stakeTx');
     this._indexTxs(this.revokeTxs, timeInterval, 'revokeTx');
 
-    // console.log('txIndex ' + timeInterval + '%%%%%', this.txIndex);
+    console.log('txIndex ' + timeInterval, this.txIndex);
 
     let totals = this._totals = {
       ticketVoteCount: 0,
