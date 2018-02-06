@@ -21,6 +21,7 @@ export default class Datastore {
     this.eventEmitter = EventEmitterSingleton.getInstance();
     this.voteTxs = [];
     this.stakeTxs = [];
+    this.revokeTxs = [];
     this.txIndex = {};
     this._totals = {};
     this._series = [];
@@ -30,6 +31,7 @@ export default class Datastore {
 
     let voteTxs = this.voteTxs = [];
     let stakeTxs = this.stakeTxs = [];
+    let revokeTxs = this.revokeTxs = [];
 
     this.eventEmitter.emit('datastore:isloading');
 
@@ -56,6 +58,7 @@ export default class Datastore {
           let rewardVin = _.find(tx.vin, 'stakebase');
           let returnVin = _.find(tx.vin, 'txid');
 
+          // vote tx
           if (rewardVin !== undefined) {
             voteTxs.push({
               rewardAmt: rewardVin.amountin,
@@ -63,22 +66,38 @@ export default class Datastore {
               ticketId: tx.ticketid,
               ts: moment.unix(tx.time)
             });
+            return;
+          }
 
-          } else {
-
-            let stakeTx = _.find(tx.vout, function(vout){
-              if(vout.scriptPubKey.commitamt){
-                return true;
-              }
-            });
-
-            if (stakeTx) {
-              stakeTxs.push({
-                ticketId: tx.txid,
-                purchasedTicketCostAmount: stakeTx.scriptPubKey.commitamt,
-                ts: moment.unix(tx.time)
-              });
+          // stake submission
+          let stakeTx = _.find(tx.vout, function (vout) {
+            if (vout.scriptPubKey.type === "sstxcommitment") {
+              return true;
             }
+          });
+
+          if (stakeTx) {
+            stakeTxs.push({
+              ticketId: tx.txid,
+              purchasedTicketCostAmount: stakeTx.scriptPubKey.commitamt,
+              ts: moment.unix(tx.time)
+            });
+            return;
+          }
+
+          // ticket revoke tx
+          let revokeTx = _.find(tx.vout, function (vout) {
+            if (vout.scriptPubKey.type === "stakerevoke") {
+              return true;
+            }
+          });
+
+          if (revokeTx) {
+            revokeTxs.push({
+              ticketId: tx.txid,
+              ts: moment.unix(tx.time)
+            });
+            return;
           }
         });
 
@@ -98,7 +117,8 @@ export default class Datastore {
         txIndex[dateSpec] = {
           datePoint: datePoint,
           voteTx: [],
-          stakeTx: []
+          stakeTx: [],
+          revokeTx: []
         };
       }
       txIndex[dateSpec][txType].push(tx);
@@ -114,11 +134,13 @@ export default class Datastore {
 
     this._indexTxs(this.voteTxs, timeInterval, 'voteTx');
     this._indexTxs(this.stakeTxs, timeInterval, 'stakeTx');
+    this._indexTxs(this.revokeTxs, timeInterval, 'revokeTx');
 
     // console.log('txIndex ' + timeInterval + '%%%%%', this.txIndex);
 
     let totals = this._totals = {
       ticketVoteCount: 0,
+      ticketRevokeCount: 0,
       rewardAmt: 0,
       returnPct: 0,
       ticketStakedCount: 0,
@@ -133,6 +155,7 @@ export default class Datastore {
       let sum = {
         datePoint: txIndexItem.datePoint,
         ticketVoteCount: 0,
+        ticketRevokeCount: 0,
         rewardAmt: 0,
         returnedTicketCostAmt: 0,
         returnPct: 0,
@@ -161,15 +184,19 @@ export default class Datastore {
         totals.purchasedTicketCostAmount += tx.purchasedTicketCostAmount;
       });
 
+      _.map(txIndexItem.revokeTx, function (tx) {
+        sum.ticketStakedCount -= 1;
+        sum.ticketRevokeCount += 1;
+        totals.ticketStakedCount -= 1;
+        totals.ticketRevokeCount += 1;
+      });
+
       series.push(sum);
     });
 
-    // XXX TODO this needs to take into account missed tickets
-    totals.liveTickets = totals.ticketStakedCount - totals.ticketVoteCount;
+    totals.liveTickets = totals.ticketStakedCount - totals.ticketVoteCount - totals.ticketRevokeCount;
 
     this.eventEmitter.emit('datastore:changed');
-
-    // console.log('datastore:changed ** '+ timeInterval, this._series);
   }
 
   fetchStakePoolStats() {
@@ -183,25 +210,25 @@ export default class Datastore {
     // const stakeDiffUrl = '/diff.json';
 
     return $.getJSON(stakeStatsUrl)
-      .then(function(data){
+      .then(function (data) {
         poolStats.pool = data;
         return $.getJSON(stakeDiffUrl);
       })
-      .then(function(data){
+      .then(function (data) {
         poolStats.diff = data;
         return Promise.resolve(poolStats);
       })
-      // TODO add error handling
+    // TODO add error handling
 
-      // .done(function () {
-      //   // console.log("second success");
-      // })
-      // .fail(function () {
-      //   // console.log("error");
-      // })
-      // .always(function () {
-      //   // console.log("complete");
-      // });
+    // .done(function () {
+    //   // console.log("second success");
+    // })
+    // .fail(function () {
+    //   // console.log("error");
+    // })
+    // .always(function () {
+    //   // console.log("complete");
+    // });
   }
 
   getTotals() {
@@ -214,7 +241,7 @@ export default class Datastore {
     });
   }
 
-  getmarketSummary(){
+  getmarketSummary() {
     const url = 'https://bittrex.com/dcrdata/v1.1/public/getmarketsummary?market=btc-dcr';
   }
 }

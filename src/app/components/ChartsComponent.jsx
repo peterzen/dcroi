@@ -17,7 +17,7 @@ class TicketVoteCountChartComponent extends TimelineChartComponent {
 
     return [{
       type: 'area',
-      name: 'Voted tickets',
+      name: 'Voted ',
       data: _.map(seriesData, function (i) {
         return [
           i.datePoint.valueOf(),
@@ -26,11 +26,20 @@ class TicketVoteCountChartComponent extends TimelineChartComponent {
       })
     }, {
       type: 'area',
-      name: 'Staked tickets',
+      name: 'Staked ',
       data: _.map(seriesData, function (i) {
         return [
           i.datePoint.valueOf(),
           i.ticketStakedCount
+        ]
+      })
+    }, {
+      type: 'area',
+      name: 'Revoked',
+      data: _.map(seriesData, function (i) {
+        return [
+          i.datePoint.valueOf(),
+          i.ticketRevokeCount
         ]
       })
     }];
