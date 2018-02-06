@@ -9,9 +9,10 @@ import Promise from 'promise-polyfill';
 
 import EventEmitterSingleton from './EventEmitter';
 
+const dcrdataUrlRoot = 'https://dcroi.com/dcrdata';
 const apiUrlRoot = 'https://dcroi.com/api';
 
-// const apiBackendUrl = 'https://dcroi.com/api/txs?address=';
+// const apiBackendUrl = 'https://dcroi.com/dcrdata/txs?address=';
 // const stakeStatsUrl = 'https://dcroi.com/stakestats/mainnet/current.json';
 
 export default class Datastore {
@@ -32,7 +33,7 @@ export default class Datastore {
 
     this.eventEmitter.emit('datastore:isloading');
 
-    const backendUrl = apiUrlRoot + '/address/' + votingWalletAddress + '/count/1000/raw';
+    const backendUrl = dcrdataUrlRoot + '/address/' + votingWalletAddress + '/count/1000/raw';
 
     const eventEmitter = this.eventEmitter;
 
@@ -175,8 +176,8 @@ export default class Datastore {
 
     const poolStats = {};
 
-    const stakeStatsUrl = apiUrlRoot + '/stake/pool';
-    const stakeDiffUrl = apiUrlRoot + '/stake/diff';
+    const stakeStatsUrl = dcrdataUrlRoot + '/stake/pool';
+    const stakeDiffUrl = dcrdataUrlRoot + '/stake/diff';
 
     // const stakeStatsUrl = '/pool.json';
     // const stakeDiffUrl = '/diff.json';
@@ -211,6 +212,10 @@ export default class Datastore {
     return _.sortBy(this._series, function (item) {
       return item.datePoint.valueOf();
     });
+  }
+
+  getmarketSummary(){
+    const url = 'https://bittrex.com/dcrdata/v1.1/public/getmarketsummary?market=btc-dcr';
   }
 }
 
