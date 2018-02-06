@@ -74,7 +74,7 @@ eventEmitter.addListener('resolutionselector:changed', function (timeInterval) {
 
 
 
-const votingAddressParam = window.location.pathname.substring(1);
+const votingAddressParam = window.location.hash.substring(1);
 
 if(votingAddressParam !== undefined){
   eventEmitter.emit('votingaddress:set', votingAddressParam);
