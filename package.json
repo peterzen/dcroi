@@ -25,8 +25,7 @@
   "scripts": {
     "dev": "APP_ENV=test webpack-dashboard -- webpack-dev-server --history-api-fallback --inline --progress",
     "start": "APP_ENV=test webpack-dev-server --history-api-fallback --inline --progress",
-    "build": "APP_ENV=prod webpack --progress",
-    "deploy": "rsync -ravP dist/ dcroi.com:/var/www/html"
+    "build": "APP_ENV=prod webpack --progress"
   },
   "eslintConfig": {
     "extends": "google"

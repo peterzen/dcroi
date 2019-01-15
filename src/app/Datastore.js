@@ -3,17 +3,12 @@ import $ from 'jquery';
 import './vendor/jq-ajax-progress';
 
 import moment from "moment/moment";
-// import Promise from 'bluebird';
 import Promise from 'promise-polyfill';
 
 
 import EventEmitterSingleton from './EventEmitter';
 
 const dcrdataUrlRoot = 'https://dcroi.com/dcrdata';
-const apiUrlRoot = 'https://dcroi.com/api';
-
-// const apiBackendUrl = 'https://dcroi.com/dcrdata/txs?address=';
-// const stakeStatsUrl = 'https://dcroi.com/stakestats/mainnet/current.json';
 
 export default class Datastore {
 
